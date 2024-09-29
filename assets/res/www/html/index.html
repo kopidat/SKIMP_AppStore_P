@@ -1,0 +1,230 @@
+<!doctype html>
+<html lang="ko">
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+	<title>Hello! Mobile!</title>
+</head>
+<script type="text/javascript" src="../js/mcore.min.js"></script>
+
+<body>
+<h1>Hello! Mobile!</h1>
+<div>
+
+	<button id="btnRegisterLogoutNoti" onclick="registerLogoutNoti()">로그아웃 노티등록</button><br><br>
+	<button id="btnUnregisterLogoutNoti" onclick="unregisterLogoutNoti()">로그아웃 노티해제</button><br><br>
+	<h5>0. 기본 테스트</h5>
+	<button id="btnNativeSamplePage" onclick="goNativeSample()">네이티브 연동 샘플 페이지 이동</button><br><br>
+	<button id="btngoSimpleAuthSamplePage" onclick="goSimpleAuthSample()">간편인증 샘플 페이지 이동</button><br><br><br><br>
+    <button id="btnSetKeyChainData">키체인 데이터 저장</button><br><br>
+    <button id="btnGetkeyChainData">키체인 데이터 가져오기</button><br><br>
+    <button id="btnSetUserInfo">User정보 저장</button><br><br>
+    <button id="btnGetUserInfo">User정보 가져오기</button><br><br>
+    <button id="btnGetSerialNumber">시리얼 넘버 가져오기</button><br><br>
+
+	<input type="text" id="plainText" placeholder="암/복호화 평문입력"><br>
+    <button id="btnAES256Encrypt">AES256 암호화</button><br><br>
+    <button id="btnAES256Decrypt">AES256 복호화</button><br><br>
+
+	<h5>1. 모피어스 푸시 테스트</h5>
+	<input type="text" id="push_id" placeholder="아이디 입력"><br>
+	<button id="btnPushServiceAndUser">푸시 사용자 등록</button><br><br>
+
+	<h5>2. 스토어 로그인</h5>
+	<button id="btnSaveLoginInfo" onclick="saveLoginInfo()">2-1. 스토어 로그인 정보 저장</button><br><br>
+</div>
+</body>
+
+<script type="text/javascript" src="../js/mcore.min.js"></script>
+<script type="text/javascript">
+
+function goNativeSample(){
+	M.page.html({
+		url: 'native-sample.html',
+		actionType: 'NEW_SCR'
+	});
+};
+
+function goSimpleAuthSample(){
+	M.page.html({
+		url: 'simple-auth-sample.html',
+		param: { "poo" : "9fb2afe4e07b4", "screenCaptureOnOff" : "on"},
+		actionType: 'NEW_SCR'
+	});
+};
+
+function saveLoginInfo() {
+	console.log("function saveLoginInfo()");
+	var userid = 'test userid';
+	var token = 'test token';
+	var encPwd = 'test encPwd';
+	var result = M.execute('exWNSaveLoginInfo', userid, token, encPwd);
+	console.log("result = " + result);
+	alert("result = " + result);
+};
+
+/**
+* 푸시 사용자 등록
+*/
+document.querySelector('#btnPushServiceAndUser').onclick=function(){
+    console.log("btnPushServiceAndUser click");
+    // push_id 입력없으면 안내팝업 후 종료
+    var push_id = document.getElementById("push_id").value;
+    console.log("push_id = " + push_id);
+    if(!push_id) {
+        console.log("if(!push_id)");
+        alert("if(!push_id) 푸시 아이디를 입력해주세요.");
+        return;
+    }
+
+    var cuid = 'cuid-' + push_id;
+    var cname = 'cname-' + push_id;
+    console.log("cuid = " + cuid);
+    console.log("cname = " + cname);
+
+    M.plugin('push').remote.registerServiceAndUser({
+        cuid : cuid,
+        name : cname,
+        callback : function(result) {
+            console.log("result = " + result);
+            console.log('type of status = ' + typeof status);
+            console.log("JSON.stringify(result) = " + JSON.stringify(result));
+            var info = M.plugin('push').info();
+
+			var resultMsg = '[' + info.CLIENT_UID + '/' + info.CLIENT_NAME + ']의 서비스/유저 등록결과 = ';
+            if (result.status == 'SUCCESS') {
+                resultMsg = resultMsg + '성공';
+            } else {
+                resultMsg = resultMsg + '실패';
+            }
+            console.log("resultMsg = " + resultMsg);
+            alert(resultMsg);
+        }
+    });
+};
+    
+/**
+ * 키체인 데이터 저장
+ */
+document.querySelector('#btnSetKeyChainData').onclick=function(){
+    data = 'testUser';
+    var key = 'dataKey';
+    M.execute('exWNSetKeychainData', data, key);
+};
+        
+/**
+ * 키체인 데이터 가져오기
+ */
+document.querySelector('#btnGetkeyChainData').onclick=function(){
+    var key = 'dataKey';
+    M.execute('exWNGetKeychainData', key);
+};
+
+/**
+ * User정보 저장
+ */
+document.querySelector('#btnSetKeyChainData').onclick=function(){
+    var data = {};
+    var appName = 'TESTAPP0001';
+    data.userId = 'testUser';
+    data.userName = '홍길동';
+    data.userTel = '01012345678';
+    M.execute('exWNSetUserInfo', data, appName);
+};
+            
+/**
+ * User정보 가져오기
+ */
+document.querySelector('#btnGetkeyChainData').onclick=function(){
+    var appName = 'TESTAPP0001';
+    M.execute('exWNGetUserInfo', appName);
+};
+    
+var encStr; // AES256 암호화된 텍스트
+/**
+ * AES256 암호화
+ */
+document.querySelector('#btnAES256Encrypt').onclick=function(){
+    var plainStr = getPlainText(); // 'aes256EncryptSampleStr';
+    console.log("plainStr = " + plainStr);
+    plainStr = '1234567890!@';
+
+    /*
+    if(!plainStr) {
+        console.log("if(!plainStr)");
+        alert("if(!plainStr) 암/복호화 평문을 입력해주세요.");
+        return;
+    }
+    */
+
+    encStr = M.execute('exWNAES256Encrypt', plainStr);
+    console.log('encStr : ' + encStr);
+    alert("encStr = " + encStr);
+};
+
+/**
+ * AES256 복호화
+ */
+document.querySelector('#btnAES256Decrypt').onclick=function(){
+    var decStr = M.execute('exWNAES256Decrypt', encStr);
+    console.log('decStr : ' + decStr);
+    alert("decStr = " + decStr);
+};
+
+function getPlainText() {
+    console.log("function getPlainText()");
+    var plainText = document.getElementById("plainText").value;
+    console.log("plainText = " + plainText);
+    return plainText;
+};
+
+
+// 로그아웃 노티 테스트
+function onLogoutNotiClicked() {
+	console.log('onLogoutNotiClicked()');
+	M.pop.alert({
+		message: '로그아웃 하시겠습니까?',
+		buttons: ['확인', '취소'],
+		callback: function(idx) {
+			if (idx == 0) { // 확인
+				//
+				M.execute('exWNUnregisterLogoutNoti');
+			} else { // 취소
+			}
+		}
+	});
+}
+
+function registerLogoutNoti() {
+	console.log("registerLogoutNoti()");
+	M.execute('exWNRegisterLogoutNoti');
+}
+
+function unregisterLogoutNoti() {
+	console.log("unregisterLogoutNoti()");
+	M.execute('exWNUnregisterLogoutNoti');
+}
+
+M.onReady(function(e) {});
+
+M.onHide(function(e) {});
+
+M.onRestore(function(e) {});
+
+var pageInit = function(){
+	goNativeSample();
+};
+
+var MStatus = {
+		onReady : function(){
+			// pageInit();
+		},
+//		onBack : function(){},
+		onRestore : function(){},
+		onHide : function(){},
+		onDestroy : function(){},
+		onPause : function(){},
+		onResume : function(){}
+}
+</script>
+</html>

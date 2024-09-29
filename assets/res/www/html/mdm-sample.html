@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="ko">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+    <title>Hello! Mobile!</title>
+</head>
+
+<body>
+<h4>iOS - MDM(SSM) 설정</h4>
+<li><button id="btnSSMInstallCheck">MDM(SSM) 설치 체크</button></li><br>
+<li><button id="btnSSMInstallPageCall">MDM(SSM) 설치 페이지 이동</button></li><br>
+<li><button id="btnSSMLogin">MDM(SSM) 로그인</button></li><br>
+<li><button id="btnSSMLogout">MDM(SSM) 로그아웃</button></li><br>
+<li><button id="btnGetSerialNum">SerialNumber 가져오기</button></li><br>
+
+<h5>안드로이드 MDM(SSM)</h5>
+- 로그인/로그아웃 확장함수만 있음.
+<br><br>
+<button id="btnMDMLogin" onclick="MDMLogin()">안드로이드 MDM(SSM) 로그인</button><br><br>
+<button id="btnMDMLogout" onclick="MDMLogout()">안드로이드 MDM(SSM) 로그아웃</button><br><br>
+</body>
+
+<script type="text/javascript" src="../js/mcore.min.js"></script>
+<script type="text/javascript">
+
+// 안드로이드 MDM(SSM) 로그인
+function MDMLogin() {
+	console.log("function MDMLogin()");
+	var result = M.execute('exWNMDMLogin');
+	console.log("result = " + result);
+	alert("result = " + result);
+};
+
+// 안드로이드 MDM(SSM) 로그아웃
+function MDMLogout() {
+	console.log("function MDMLogout()");
+	var result = M.execute('exWNMDMLogout');
+	console.log("result = " + result);
+	alert("result = " + result);
+};
+
+// MDM(SSM) 설치 체크
+document.querySelector('#btnSSMInstallCheck').onclick=function() {
+    var callback = 'SSMCallback';
+    M.execute('exWNSSMInstallCheck', callback);
+};
+
+// MDM(SSM) 로그인
+document.querySelector('#btnSSMLogin').onclick=function() {
+    var callback = 'SSMCallback';
+    M.execute('exWNSSMLogin', callback);
+};
+
+// MDM(SSM) 로그아웃
+document.querySelector('#btnSSMLogout').onclick=function() {
+    var callback = 'SSMCallback';
+    M.execute('exWNSSMLogout', callback);
+};
+
+// successCode
+var SSM_SUCCESS_CODE_LOGIN = 1;             // Ssm 로그인
+var SSM_SUCCESS_CODE_SCREEN_CAPTURE = 2;    // 캡쳐 제어
+var SSM_SUCCESS_CODE_CAMERA = 3;            // 카메라 제어
+var SSM_SUCCESS_CODE_DEVICE_INFO = 4;       // 단말 H/W 정보 조회
+var SSM_SUCCESS_CODE_LOGOUT = 5;            // Ssm 로그아웃
+var SSM_SUCCESS_CODE_EXIST_AGENT = 6;       // SsmAgent 설치 확인
+var SSM_SUCCESS_CODE_CHECK_SSM = 7;         // SsmAgent check
+var SSM_SUCCESS_CODE_POLICY_STATUS = 8;     // 업무앱에서 정책 적용 status
+
+// errorCode
+var SSM_ERROR_CODE_UNKNOWN_EXCEPTION = -1;  // 알수 없는 오류
+var SSM_ERROR_CODE_TIME_OUT = 0;            // 통신 timeout 오류
+var SSM_ERROR_CODE_NOT_SERVER_INFO = 1;     // 서버정보 미설정 오류
+var SSM_ERROR_CODE_NOT_EXIST_AGENT = 2;     // SsmAgent 미설치 오류
+var SSM_ERROR_CODE_NOT_MDM_PROFILE = 3;     // MDM프로파일 삭제시 오류
+var SSM_ERROR_CODE_EXIST_SSM2 = 4;          // SSM2.0이 설치되어 있는 오류
+var SSM_ERROR_CODE_EXIST_SSM4 = 5;          // SSM4.0 SSM서버로부터 배포되지 않은 앱이 설치되어있는 오류
+var SSM_ERROR_CODE_CHECK_SSM = 6;           // SsmAgent check
+var SSM_ERROR_CODE_POLICY_STATUS = 7;       // 업무앱에서 정책 적용 status
+
+function SSMCallback(result) {
+//    console.log('result : ' + JSON.stringify(result));
+    
+    var successCode = result.successCode;
+    var errorCode = result.errorCode;
+    var resultData = result.resultData;
+    
+    var result = resultData.result;
+    var mdn = resultData.mdn;
+    var adminTel = resultData.adminTel;
+    var profileUrl = resultData.profileUrl;
+    var type = resultData.type;
+    var url = resultData.url;
+    
+    console.log('successCode : ' + successCode);
+    console.log('errorCode : ' + errorCode);
+    console.log('result : ' + result);
+    console.log('mdn : ' + mdn);
+    console.log('adminTel : ' + adminTel);
+    console.log('profileUrl : ' + profileUrl);
+    console.log('type : ' + type);
+    console.log('url : ' + url);
+    
+    if (errorCode == SSM_ERROR_CODE_NOT_MDM_PROFILE) {
+        // 프로파일 설치 페이지 이동
+        M.execute('exWNSSMInstallPageCall', 'https://qa.ssm.link/inhouse');
+    } else if (errorCode == SSM_ERROR_CODE_NOT_EXIST_AGENT) {
+        // SsmAgent 설치 페이지 이동
+        if (type == 0) {
+            M.execute('exWNSSMInstallPageCall', 'https://qa.ssm.link/inhouse');
+        } else {
+            M.execute('exWNSSMInstallPageCall', 'https://qa.ssm.link/inhouse');
+        }
+    }
+}
+    
+// SerialNumber 가져오기
+document.querySelector('#btnGetSerialNum').onclick=function() {
+    M.execute('exWNGetSerialNum');
+};
+
+M.onReady(function(e) {
+
+});
+
+M.onHide(function(e){
+
+});
+
+M.onRestore(function(e) {
+
+});
+
+var MStatus = {
+        onReady : function(){},
+//        onBack : function(){},
+        onRestore : function(){},
+        onHide : function(){},
+        onDestroy : function(){},
+        onPause : function(){},
+        onResume : function(){}
+}
+</script>
+
+</html>

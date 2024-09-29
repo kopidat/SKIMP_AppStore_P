@@ -1,0 +1,294 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="skimp.partner.store">
+
+    <application
+        android:name=".implementation.ExtendApplication"
+        android:allowBackup="false"
+        android:icon="@drawable/ic_launcher"
+        android:label="@string/app_name"
+        android:usesCleartextTraffic="true">
+        <uses-library
+            android:name="org.apache.http.legacy"
+            android:required="false" />
+
+        <!-- 에러 발생시, ${applicationId} 를 packagename 으로 변경-->
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.provider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/mcore_provider_paths" />
+        </provider>
+
+        <activity
+            android:name=".Startup"
+            android:theme="@android:style/Theme.Black.NoTitleBar">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".BaseActivity"
+            android:configChanges="locale|keyboardHidden|orientation|screenSize"
+            android:imeOptions="actionSend|flagNoEnterAction"
+            android:theme="@android:style/Theme.Holo.Light.NoActionBar"/>
+        <activity
+            android:name=".samples.activity.ImageDetailsActivity"
+            android:configChanges="locale|keyboardHidden|orientation|screenSize" />
+        <activity
+            android:name=".samples.activity.StartActivity"
+            android:configChanges="locale|keyboardHidden|orientation|screenSize" />
+        <activity
+            android:name=".samples.activity.SampleActivity"
+            android:configChanges="locale|keyboardHidden|orientation|screenSize" />
+        <activity
+            android:name=".samples.activity.SampleActivity2"
+            android:configChanges="locale|keyboardHidden|orientation|screenSize" />
+        <activity
+            android:name=".samples.activity.BatchTempActivity"
+            android:configChanges="locale|keyboardHidden|orientation|screenSize" />
+        <activity
+            android:name=".samples.activity.SampleNativeListActivity"
+            android:configChanges="locale|keyboardHidden|orientation|screenSize" />
+        <activity
+            android:name=".samples.activity.SampleNativeMapActivity"
+            android:configChanges="locale|keyboardHidden|orientation|screenSize" />
+        <activity
+            android:name=".samples.activity.ShowPushPopup"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustUnspecified|adjustPan" />
+        <activity
+            android:name="m.client.android.library.core.view.MainActivity"
+            android:configChanges="locale|keyboardHidden|orientation|screenSize"
+            android:imeOptions="actionSend|flagNoEnterAction" />
+
+        <provider
+            android:name="m.client.android.library.core.managers.LocalFileContentProvider"
+            android:authorities="${applicationId}" />
+
+        <activity
+            android:name="m.client.library.addon.media.AudioRecoderActivity"
+            android:configChanges="locale|keyboardHidden|orientation" />
+        <activity
+            android:name="m.client.library.addon.media.MediaPlayActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:theme="@android:style/Theme.Black.NoTitleBar" />
+        <activity
+            android:name="m.client.library.addon.media.crop.CropImageActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:theme="@android:style/Theme.Black.NoTitleBar" />
+        <!--        <activity-->
+        <!--            android:name="m.client.library.plugin.thirdparty.pattern.basic.activity.SetPatternLayoutActivity"-->
+        <!--            android:launchMode="singleTop"></activity>-->
+        <!--        <activity-->
+        <!--            android:name="m.client.library.plugin.thirdparty.pattern.basic.activity.ConfirmPatternLayoutActivity"-->
+        <!--            android:launchMode="singleTop" />-->
+        <!--        <activity android:name="m.client.library.plugin.thirdparty.pin.activity.PinActivity"></activity>-->
+
+        <!--간편 인증-->
+        <activity
+            android:name=".patternlock.activity.SetPatternLayoutActivity"
+            android:launchMode="singleTop" />
+        <activity
+            android:name=".patternlock.activity.ConfirmPatternLayoutActivity"
+            android:launchMode="singleTop" />
+        <activity android:name=".pinlock.activity.PinActivity" />
+
+
+        <!-- === 모피어스 푸시 start === -->
+        <!--http://docs.morpheus.co.kr/client/push/upns_5_1.html-->
+
+        <!-- 5.1.x 버전 추가 : JobScheduler 를 이용한 서비스 Start-->
+        <service
+            android:name="m.client.push.library.service.UPNSJobService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.firebase.jobdispatcher.ACTION_EXECUTE" />
+            </intent-filter>
+        </service>
+
+        <service
+            android:name="m.client.push.library.service.UPNSConnectService"
+            android:exported="false" />
+
+        <!-- 5.1.x 버전 추가 : JobScheduler 를 이용한 서비스 End-->
+
+        <receiver android:name="m.client.push.library.receiver.ServiceHandleReceiver">
+            <intent-filter>
+                <action android:name="${applicationId}.START_PUSHSERVICE" />
+                <action android:name="${applicationId}.STOP_PUSHSERVICE" />
+                <action android:name="${applicationId}.RESTART_PUSHSERVICE" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.SCREEN_OFF" />
+                <action android:name="android.intent.action.SCREEN_ON" />
+                <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
+            </intent-filter>
+        </receiver>
+
+        <receiver android:name="m.client.push.library.receiver.UpnsActionReceiver">
+            <intent-filter>
+                <action android:name="${applicationId}.ACTION_UPNS" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </receiver>
+
+        <!-- FCM setting start -->
+        <!-- push service&receiver -->
+        <service
+            android:name="m.client.push.library.service.FCMIntentService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+
+
+        <!-- FirebaseInstanceIdService performs security checks at runtime,
+             no need for explicit permissions despite exported="true" -->
+        <service
+            android:name="m.client.push.library.service.FCMInstanceIDListenerService"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
+            </intent-filter>
+        </service>
+
+        <!-- FCM setting End -->
+
+        <receiver android:name=".push.MessageArrivedReceiver">
+            <intent-filter>
+                <action android:name="${applicationId}.GCM_MESSAGE_ARRIVED" />
+                <action android:name="${applicationId}.UPNS_MESSAGE_ARRIVED" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </receiver>
+
+        <receiver android:name=".push.PushActionReceiver">
+            <intent-filter>
+                <action android:name="${applicationId}.ACTION_COMPLETED" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </receiver>
+
+        <receiver android:name="m.client.push.library.receiver.GcmActionReceiver">
+            <intent-filter>
+                <action android:name="${applicationId}.ACTION_GCM" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </receiver>
+
+        <receiver android:name=".push.PushStatusCheckReceiver">
+            <intent-filter>
+                <action android:name="${applicationId}.ACTION_NOTIFICATION_HANDLE" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </receiver>
+
+        <activity
+            android:name=".push.PushMessageManager"
+            android:theme="@android:style/Theme.Translucent"
+            android:windowSoftInputMode="adjustUnspecified|adjustPan">
+            <intent-filter>
+                <action android:name="${applicationId}.notification" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <!-- === 모피어스 푸시 end === -->
+
+        <!-- 스토어 라이브러리에서 scheme 으로 실행할 투명 Activity -->
+        <activity
+            android:name=".SchemeActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize|screenLayout"
+            android:theme="@android:style/Theme.Translucent">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data android:scheme="skimp_partner_store" />
+            </intent-filter>
+        </activity>
+
+        <!-- 개별앱에 인증정보를 제공할 컨텐트 프로바아더, 읽기권한만 제공 -->
+        <provider
+            android:name=".provider.AuthContentProvider"
+            android:authorities="${applicationId}.authprovider"
+            android:enabled="true"
+            android:exported="true" />
+
+        <activity
+            android:name=".nativeex.LogoutNotiClickActivity"
+            android:theme="@android:style/Theme.Translucent"
+            android:windowSoftInputMode="adjustUnspecified|adjustPan">
+        </activity>
+
+    </application>
+
+    <uses-feature
+        android:name="android.hardware.telephony"
+        android:required="false" />
+
+    <uses-permission android:name="android.permission.RESTART_PACKAGES" />
+    <uses-permission android:name="android.permission.KILL_BACKGROUND_PROCESSES" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.GET_TASKS" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+
+    <uses-feature android:name="android.hardware.camera" />
+
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.FLASHLIGHT" />
+    <uses-permission android:name="android.permission.READ_PHONE_NUMBERS" />
+    <uses-permission android:name="android.permission.USE_FINGERPRINT" />
+    <uses-permission android:name="android.permission.USE_BIOMETRIC" />
+
+    <!-- === 모피어스 푸시 start === -->
+    <!--http://docs.morpheus.co.kr/client/push/upns_5_1.html-->
+
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+
+    <!-- 안드로이드 8.0 이상 필수, 라이브러리 버전 4.1.0.7 이상부터 추가된 리시버 등록 시 권한 등록위해 선언 (없으면 앱 디폴트 권한) -->
+    <permission
+        android:name="${applicationId}.permission.MPUSH_PERMISSION"
+        android:protectionLevel="signature" />
+    <uses-permission android:name="${applicationId}.permission.MPUSH_PERMISSION" />
+
+    <!-- 안드로이드 9.0 이상 필수 : targetSdkVersion = 28 이상인 경우 -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+
+    <!-- === 모피어스 푸시 end === -->
+
+
+    <!-- MDM(MDS) 앱 설치여부 확인을 위한 설정. 그래야 getLaunchIntentForPackage null 안떨어짐. -->
+    <!-- 안드로이드 11(API 30) 이상을 타겟 하면 QUERY_ALL_PACKAGES or <queries> 넣어야 함. -->
+    <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES"
+        tools:ignore="QueryAllPackagesPermission" />
+<!--    <queries>-->
+<!--        <package android:name="com.funnnew.android.skimds" />-->
+<!--    </queries>-->
+
+    <!-- 모피어스 M.apps.install API 앱 설치를 위해 -->
+    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES"/>
+
+</manifest>

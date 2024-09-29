@@ -1,0 +1,314 @@
+<!doctype html>
+<html lang="ko">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+    <title>Hello! Mobile!</title>
+</head>
+
+<body>
+<h4>패턴 인증</h4>
+<li><button id="btnPatternCert">패턴 설정 및 인증</button></li><br>
+<li><button id="btnPatternCertReset">패턴 재설정 및 인증</button></li><br>
+
+<h4>지문/Face 인증</h4>
+<li><button id="btnBioCertUseCheck">생체인증 사용가능 여부체크</button></li><br>
+<li><button id="btnBioCertSettingAppMove">설정 앱으로 이동</button></li><br>
+<li><button id="btnBioCert">생체인증</button></li><br>
+
+<h4>PIN 인증</h4>
+<li><button id="btnPinRegister">PIN 번호 등록</button></li><br>
+<li><button id="btnPinRemove">PIN 번호 삭제</button></li><br>
+<li><button id="btnGetPinNum">PIN 번호 가져오기</button></li><br>
+<li><button id="btnPinAuth">PIN 번호 인증</button></li><br>
+<li><button id="btnPinSample">PIN 샘플</button></li><br>
+
+</body>
+
+<script type="text/javascript" src="../js/mcore.min.js"></script>
+<script type="text/javascript">
+
+// 패턴 설정 및 인증
+document.querySelector('#btnPatternCert').onclick=function() {
+    if(M.navigator.device("ios")) {     // ios일 경우
+        /*
+         * 종합 패턴인증
+         * Pattern 인증 제품에 대한 3rd Party연동 기능을 제공한다
+         * M.plugin("3rd_iOS_pattern_basic").lock
+         * @param {object} object 설정 정보
+         * @param {string} object.type 패턴 타입을 잠금으로 설정
+         * @param {function} object.callback 결과 콜백 함수
+         */
+        M.plugin("3rd_iOS_pattern_basic").lock({
+            type:"lock",
+            callback:function(status, result){
+                // 5회 오류로 재설정 필요
+                if (result.message == "REMOVE"){
+                    M.pop.alert({
+                        title: "인증 오류",
+                        message: "5회 오류로 패턴을 재설정 하셔야 합니다.",
+                        buttons: ['취소', '확인'],
+                        callback: function(idx){
+                            M.plugin("3rd_iOS_pattern_basic").lock({
+                                type: 'reset',
+                                callback: function(status, result){
+                                    if (result.message == "SUCCESS"){
+                                        // 패턴 재설정 및 인증 성공
+                                        console.log("result message : " + result.message);
+                                    }
+                                }
+                            });
+                        }
+                    });
+                } else if (result.result == "SUCCESS"){
+                    // 패턴인증 성공
+                    console.log("result message : " + result.message);
+                } else if (result.result == "FAIL") {
+                    // 패턴인증 취소
+                    console.log("resutl message : " + result.message);
+                }
+            }
+        });
+    } else if(M.navigator.device("android")){    //android일 경우
+        M.execute("exWNPatternLockActivity", {
+			type: "lock",
+			callback: M.response.on( function( status, result ) {
+				console.log(status);
+				console.log(result);
+				M.pop.alert('result : ' + JSON.stringify(result));
+				if (result.message == "REMOVE"){
+                    // 5회 오류로 패턴 재설정 필요
+                    M.pop.alert({
+                        title: "인증 오류",
+                        message: "5회 오류로 패턴을 재설정 하셔야 합니다.",
+                        buttons: ['확인'],
+                        callback: function(idx){
+                        	M.execute("exWNPatternLockActivity", {
+								type: "reset",
+								callback: M.response.on( function( status, result ) {
+									console.log(status);
+									console.log(result);
+								}).toString()
+							});
+                        }
+                    });
+                } else if (result.message == "SUCCESS") {
+                    // 인증 성공
+                    console.log("result message : " + result.message);
+                }
+			}).toString()
+		});
+    }
+};
+
+// 패턴 재설정 및 인증
+document.querySelector('#btnPatternCertReset').onclick=function() {
+	if(M.navigator.device("ios")) {     // ios일 경우
+		M.plugin("3rd_iOS_pattern_basic").lock({
+			type: 'reset',
+			callback: function(status, result){
+				if (result.result == "SUCCESS"){
+					// 패턴 재설정 및 인증 성공
+					console.log("result message : " + result.message);
+				} else if (result.result == "FAIL") {
+                    // 패턴인증 취소
+                    console.log("resutl message : " + result.message);
+                }
+			}
+		});
+	} else if(M.navigator.device("android")){    //android일 경우
+		M.execute("exWNPatternLockActivity", {
+			type: "reset",
+			callback: M.response.on( function( status, result ) {
+				console.log(status);
+				console.log(result);
+				M.pop.alert('result : ' + JSON.stringify(result));
+			}).toString()
+		});
+    }
+};
+
+// 생체인증 사용가능 여부체크
+document.querySelector('#btnBioCertUseCheck').onclick=function() {
+    if(M.navigator.device("ios")) {     // ios일 경우
+        M.plugin('3rd_iOS_fingerprint_basic').check({
+            callback: function(status, result){
+                console.log('status : ' + status);
+                console.log('result : ' + JSON.stringify(result));
+                M.pop.alert('result : ' + JSON.stringify(result));
+            }
+        });
+    } else if (M.navigator.device("android")) {     // android일 경우
+        M.plugin('3rd_fingerprint_basic').check({
+                callback:function(status,result){
+                        console.log(status + JSON.stringify(result));
+                        M.pop.alert('result : ' + JSON.stringify(result));
+                }
+        });
+    }
+}
+
+// 앱 설정 화면으로 이동
+document.querySelector('#btnBioCertSettingAppMove').onclick=function() {
+    if(M.navigator.device("ios")) {     // ios일 경우
+        var result = M.plugin('3rd_iOS_fingerprint_basic').moveSetting();
+        console.log('result : ' + JSON.stringify(result));
+        M.pop.alert('result : ' + JSON.stringify(result));
+    } else if (M.navigator.device("android")) {     // android일 경우
+        var result = M.plugin('3rd_fingerprint_basic').moveSetting();
+        console.log('result : ' + JSON.stringify(result));
+        M.pop.alert('result : ' + JSON.stringify(result));
+    }
+}
+
+// 생체 인증
+document.querySelector('#btnBioCert').onclick=function() {
+    if(M.navigator.device("ios")) {     // ios일 경우
+        M.plugin('3rd_iOS_fingerprint_basic').auth({
+            callback: function(status, result) {
+                console.log('status : ' + status);
+                console.log('result : ' + JSON.stringify(result));
+                M.pop.alert('result : ' + JSON.stringify(result));
+            }
+        });
+    } else if (M.navigator.device("android")) {     // android일 경우
+        M.plugin('3rd_fingerprint_basic').auth({
+            callback: function(status, result) {
+                console.log('status : ' + status);
+                console.log('result : ' + JSON.stringify(result));
+                M.pop.alert('result : ' + JSON.stringify(result));
+            }
+        });
+    }
+}
+
+// PIN 번호 등록
+document.querySelector('#btnPinRegister').onclick=function() {
+    if (M.navigator.device("ios")) {     // ios일 경우
+        var params = {};
+        params.length = '4';
+        params.activity = 'SamplePassCodeViewController';
+
+        M.plugin('3rd_iOS_pin_basic').register({
+            param: params,
+            callback:function(status, result) {
+                console.log('status : ' + status);
+                console.log('result : ' + JSON.stringify(result));
+                M.pop.alert('result : ' + JSON.stringify(result));
+            }
+        });
+    } else if (M.navigator.device("android")) {     // android일 경우
+        M.execute("exWNPinLockActivity", {
+			length : 4,
+			type: 'REGISTER',
+			callback: M.response.on( function( status, result ) {
+				console.log(status);
+				console.log(result);
+				M.pop.alert('result : ' + JSON.stringify(result));
+			}).toString()
+		});
+    }
+}
+
+// PIN 번호 삭제
+document.querySelector('#btnPinRemove').onclick=function() {
+    if (M.navigator.device("ios")) {        // ios일 경우
+        M.plugin('3rd_iOS_pin_basic').remove({
+            callback:function(status, result) {
+                console.log('status : ' + status);
+                console.log('result : ' + JSON.stringify(result));
+                M.pop.alert('result : ' + JSON.stringify(result));
+            }
+        });
+    } else if (M.navigator.device("android")) {     // android일 경우
+        M.execute("exWNPinLockActivity", {
+			type: 'REMOVE',
+			callback: M.response.on( function( status, result ) {
+				console.log(status);
+				console.log(result);
+				M.pop.alert('result : ' + JSON.stringify(result));
+			}).toString()
+		});
+    }
+}
+
+// PIN 번호 자져오기
+document.querySelector('#btnGetPinNum').onclick=function() {
+    if (M.navigator.device("ios")) {        // ios일 경우
+        M.plugin('3rd_iOS_pin_basic').get({
+            callback:function(status, result) {
+                console.log('status : ' + status);
+                console.log('result : ' + JSON.stringify(result));
+                M.pop.alert('result : ' + JSON.stringify(result));
+            }
+        });
+    } else if (M.navigator.device("android")) {     // android일 경우
+        M.execute("exWNPinLockActivity", {
+			type: 'GET',
+			callback: M.response.on( function( status, result ) {
+				console.log(status);
+				console.log(result);
+				M.pop.alert('result : ' + JSON.stringify(result));
+			}).toString()
+		});
+    }
+}
+
+// PIN 번호 인증
+document.querySelector('#btnPinAuth').onclick=function() {
+    if (M.navigator.device("ios")) {        // ios일 경우
+        var params = {};
+        params.length = '4';
+        params.activity = 'SamplePassCodeViewController';
+
+        M.plugin('3rd_iOS_pin_basic').auth({
+            param: params,
+            callback:function(status, result) {
+                console.log('status : ' + status);
+                console.log('result : ' + JSON.stringify(result));
+                M.pop.alert('result : ' + JSON.stringify(result));
+            }
+        });
+    } else if (M.navigator.device("android")) {     // android일 경우
+    	M.execute("exWNPinLockActivity", {
+			length : 4,
+			type: 'AUTH',
+			callback: M.response.on( function( status, result ) {
+				console.log(status);
+				console.log(result);
+				M.pop.alert('result : ' + JSON.stringify(result));
+			}).toString()
+		});
+    }
+}
+
+// PIN sample
+document.querySelector('#btnPinSample').onclick=function() {
+    M.execute('exWNPinSample');
+}
+
+
+M.onReady(function(e) {
+
+});
+
+M.onHide(function(e){
+
+});
+
+M.onRestore(function(e) {
+
+});
+
+var MStatus = {
+		onReady : function(){},
+//		onBack : function(){},
+		onRestore : function(){},
+		onHide : function(){},
+		onDestroy : function(){},
+		onPause : function(){},
+		onResume : function(){}
+}
+</script>
+
+</html>

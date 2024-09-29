@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no,viewport-fit=cover" />
+    <meta name="format-detection" content="telephone=no"/>
+    <link rel="shortcut icon" href="../img/favicon.ico" />
+    <link rel="apple-touch-icon" href="../img/favicon.ico" />
+    <link rel="stylesheet" href="../css/morpheus-style.css" />
+    <script src="../js/libs/jquery-3.1.1.min.js"></script>
+    <script src="../js/ui.js"></script>
+
+    <title>간편로그인 설정 &gt; SK innovation</title>
+  </head>
+  <body>
+    <div class="wrapper business1">
+        <header class="header">
+            <h1>간편로그인 설정</h1> 
+            <button class="prev"></button>
+        </header>            
+        <div class="content" id="content">
+            <div class="login-simple">
+                <dl>
+                    <dt>간편로그인  사용</dt>
+                    <dd>
+                        <label class="switch">
+                            <input type="checkbox">
+                            <span class="slider"></span>
+                        </label>
+                    </dd>
+                </dl>                
+            </div>
+            <div class="simple-auth">
+                <dl>
+                    <dt>생체인증 사용<em class="un-used">(미사용)</em></dt>
+                    <dd><label class="radio-box"><input type="radio" name="radio1" class="radio" id="BIO"><span></span></label></dd>
+                </dl>
+                <dl>
+                    <dt>패턴인증 사용</dt>
+                    <dd><label class="radio-box"><input type="radio" name="radio1" class="radio" id="Pattern"><span></span></label></dd>
+                </dl>
+                <ul class="none">
+                    <li><button class="btn-simple w100p" id="btnChangePattern">패턴인증 변경</button></li>
+                </ul>
+                <dl class="pdt30">
+                    <dt>핀번호 사용</dt>
+                    <dd><label class="radio-box"><input type="radio" name="radio1" class="radio" id="PIN"><span></span></label></dd>
+                </dl>
+                <ul class="none">
+                    <li><button class="btn-simple w100p" id="btnChangePIN">핀번호 변경</button></li>
+                </ul>                
+            </div>            
+        </div>
+        <div class="btn-footer" id="btnFooter">
+            <button class="btn-group" id="btnGroup">업무앱</button>
+            <button class="btn-update2" id="btnUpdate">업데이트</button>
+            <button class="btn-notice" id="btnNotice">공지사항</button>
+            <button class="btn-set" id="btnSetting">설정</button>
+        </div>
+    </div>
+</body>
+  <script type="text/javascript" src="../js/mcore.min.js"></script>
+</html>

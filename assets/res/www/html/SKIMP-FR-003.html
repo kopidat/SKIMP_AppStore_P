@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no,viewport-fit=cover" />
+    <meta name="format-detection" content="telephone=no"/>
+    <link rel="shortcut icon" href="../img/favicon.ico" />
+    <link rel="apple-touch-icon" href="../img/favicon.ico" />
+    <link rel="stylesheet" href="../css/morpheus-style.css" />
+    <script src="../js/libs/jquery-3.1.1.min.js"></script>
+    <script src="../js/ui.js"></script>
+
+    <title>로그인 &gt; SK innovation</title>
+  </head>
+  <body>
+    <div class="wrapper login">            
+        <div class="content" id="content">
+            <div class="login-logo">
+                <div class="logo">SK innovation</div>
+                <div class="logo-title">APP Store</div>
+            </div> 
+            <div class="login-box">
+                <div class="login-wrap">                     
+                    <ul>
+                        <li class="id">
+                            <label>
+                                <input type="text" title="아이디" placeholder="아이디를 입력해주세요." id="userId" value="">
+                            </label>
+                        </li>
+                        <li class="pw">
+                            <label>
+                                <input type="password" title="비밀번호" placeholder="비밀번호를 입력해주세요." id="userPw">
+                            </label>                        
+                        </li>
+                    </ul> 
+                    <div class="btn-box login">
+                        <!-- disabled 아이디패스 미입력시 -->
+                        <button class="btn-confirm w100p" id="btnLogin" disabled>로그인</button>
+                    </div>                                     
+                </div>
+                
+                
+                <div class="copy">Ⓒ 2021 SK Innovation All Rights Reserved.</div>
+                <p id="appVersion" style="text-align:center;color:red;font-size: large;"></p>
+                <p id="resourceVersion" style="text-align:center;color:blue;font-size: large;"></p>
+            </div>
+        </div>
+    </div>
+</body>
+  <script type="text/javascript" src="../js/mcore.min.js"></script>
+  <script type="text/javascript" src="../js/libs/jquery.ajax-cross-origin.min.js"></script>
+</html>

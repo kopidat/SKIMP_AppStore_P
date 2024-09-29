@@ -1,0 +1,153 @@
+buildscript {
+	repositories {
+		maven {url "https://maven.google.com"}
+		maven {url "https://jcenter.bintray.com"}
+		google()  // Google's Maven repository
+	}
+
+	dependencies {
+		classpath 'com.android.tools.build:gradle:4.2.2'
+		classpath 'com.google.gms:google-services:4.3.4'
+	}
+}
+
+allprojects {
+	repositories {
+		google()  // Google's Maven repository
+	}
+}
+
+apply plugin: 'com.android.application'
+apply plugin: 'com.google.gms.google-services'
+
+repositories {
+	maven {url "https://maven.google.com"}
+	maven {url "https://jcenter.bintray.com"}
+
+}
+
+
+def assetDir = "assets"
+def properties = new Properties()
+if (project.rootProject.file('local.properties').exists()) {
+	properties.load(project.rootProject.file('local.properties').newDataInputStream())
+	assetDir = properties.getProperty("asset.dir", "assets")
+}
+
+
+android {
+	compileSdkVersion 30
+	buildToolsVersion "30.0.3"
+	useLibrary 'org.apache.http.legacy'
+
+	defaultConfig {
+		minSdkVersion 23
+		targetSdkVersion 30
+
+		applicationId "skimp.partner.store"
+		versionCode 1
+		versionName "1.0.1"
+	}
+
+	sourceSets {
+		main {
+			manifest.srcFile 'AndroidManifest.xml'
+			java.srcDirs = ['src']
+			resources.srcDirs = ['src']
+			aidl.srcDirs = ['src']
+			renderscript.srcDirs = ['src']
+			res.srcDirs = ['res']
+			assets.srcDirs = [assetDir]
+			jniLibs {
+				srcDir 'libs'
+			}
+		}
+
+		androidTest.setRoot('tests')
+		debug.setRoot('build-types/debug')
+		release.setRoot('build-types/release')
+	}
+
+	dexOptions {
+		preDexLibraries = false
+	}
+
+	packagingOptions {
+		exclude "META-INF/LICENSE"
+		exclude "META-INF/DEPENDENCIES"
+	}
+	lintOptions {
+		checkReleaseBuilds false
+		abortOnError false
+	}
+
+	if (KEYSTORE_PATH?.trim()) {
+		signingConfigs{
+			releaseWithSignedKey {
+				storeFile file(KEYSTORE_PATH)
+				storePassword KEYSTORE_PW
+				keyAlias KEYSTORE_ALIAS
+				keyPassword KEYSTORE_ALIAS_PW
+			}
+		}
+	}
+
+	buildTypes {
+		release {
+			minifyEnabled true
+			proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'morpheus_proguard-project.txt', 'proguard-rules.pro'
+			if (KEYSTORE_PATH?.trim()) {
+				signingConfig signingConfigs.releaseWithSignedKey
+			}
+		}
+
+		debug {
+			if (KEYSTORE_PATH?.trim()) {
+				signingConfig signingConfigs.releaseWithSignedKey
+			}
+		}
+	}
+}
+
+//추가
+repositories {
+	flatDir {
+		dirs 'libs', 'mcoreLibs'
+	}
+}
+
+
+
+dependencies {
+	implementation fileTree(dir: 'libs', include: '*.jar')
+	implementation fileTree(dir: 'mcoreLibs', include: '*.jar', excludes: ['android-support-v4.jar', 'recyclerview-v7-22.1.1.jar'])
+
+	/**
+	 * ==========================================
+	 * 외부라이브러리 적용시  [example.aar file]
+	 * ==========================================
+	 * implementation name: 'example-release', ext: 'aar'
+	 */
+
+	// 간편인증(핀)
+	implementation 'androidx.recyclerview:recyclerview:1.1.0'
+
+	implementation platform('com.google.firebase:firebase-bom:26.2.0')
+	// 모피어스 푸시
+	implementation 'com.google.firebase:firebase-messaging'
+	implementation 'com.firebase:firebase-jobdispatcher:0.8.6'
+
+	//
+}
+
+import org.apache.tools.ant.taskdefs.condition.Os
+
+task  AppRunDebug (type: Exec, dependsOn: 'installDebug') {
+	if (Os.isFamily(Os.FAMILY_WINDOWS)) {
+		commandLine 'cmd', '/c', android.getAdbExe().toString(), 'shell', 'am', 'start', '-n', 'skimp.partner.store/.Startup'
+	}
+	else if (Os.isFamily(Os.FAMILY_MAC)) {
+		commandLine android.getAdbExe().toString(), "shell", 'am', 'start', '-n', 'skimp.partner.store/.Startup'
+	}
+}
+

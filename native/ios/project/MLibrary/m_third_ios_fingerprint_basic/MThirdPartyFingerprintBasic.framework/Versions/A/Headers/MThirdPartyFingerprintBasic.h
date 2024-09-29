@@ -1,0 +1,2 @@
+
+#import <MThirdPartyFingerprintBasic/MThirdPartyFingerprintBasicPlugin.h>

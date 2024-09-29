@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="ko">
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="format-detection" content="telephone=no, address=no, email=no">
+<title>네이티브 연동 SAMPLE PAGE</title>
+<link rel="stylesheet" type="text/css" href="../../css/style.css">
+<link rel="stylesheet" type="text/css" href="../../css/morpheus-style.css">	
+<head>
+</head>
+<body>
+<h3>네이티브 연동 SAMPLE PAGE</h3>
+
+<button id="btnBack">뒤로가기</button><br><br>
+<h5>0. 안드로이드 퍼미션</h5>
+<button id="btnHasStoragePermissionYN">0-1. 안드로이드 퍼미션 획득여부 확인 - 저장소</button><br><br>
+<button id="btnHasCameraPermissionYN">0-2. 안드로이드 퍼미션 획득여부 확인 - 카메라</button><br><br>
+<button id="btnHasLocationPermissionYN">0-3. 안드로이드 퍼미션 획득여부 확인 - 위치</button><br><br>
+<button id="btnRequestPermissions_M">0-4. 안드로이드 필수 퍼미션 요청(한번에 여러개 가능)</button><br><br>
+<button id="btnRequestPermissions_O">0-5. 안드로이드 옵션 퍼미션 요청(한번에 여러개 가능)</button><br><br>
+</body>
+
+<script type="text/javascript" src="../js/mcore.min.js"></script>
+<script type="text/javascript">
+
+document.querySelector('#btnBack').onclick=function(){
+    M.page.back();
+}
+
+// 공통 Callback
+function exWNCallback(resultJsonObj) {
+	console.log("exWNCallback(resultJsonObj)");
+
+	console.log('type of resultJsonObj = ' + typeof resultJsonObj);
+	console.log(JSON.stringify(resultJsonObj));
+	alert(JSON.stringify(resultJsonObj));
+
+	console.log('resultJsonObj.code = ' + resultJsonObj.code);
+	if(resultJsonObj.code == 0) {
+		// 성공. 비지니스 로직 수행
+	} else {
+		// 실패. 에러처리등...
+	}
+}
+
+// 0-1. 안드로이드 퍼미션 획득여부 확인 - 저장소. 결과값 true/false
+document.querySelector('#btnHasStoragePermissionYN').onclick=function(){
+	var hasPermission = M.execute('exWNHasPermissionYN', 'android.permission.WRITE_EXTERNAL_STORAGE');
+	console.log('hasPermission = ' + hasPermission);
+	alert('hasPermission = ' + hasPermission);
+};
+
+// 0-2. 안드로이드 퍼미션 획득여부 확인 - 카메라. 결과값 true/false
+document.querySelector('#btnHasCameraPermissionYN').onclick=function(){
+	var hasPermission = M.execute('exWNHasPermissionYN', 'android.permission.CAMERA');
+	console.log('hasPermission = ' + hasPermission);
+	alert('hasPermission = ' + hasPermission);
+};
+
+// 0-3. 안드로이드 퍼미션 획득여부 확인 - 위치. 결과값 true/false
+document.querySelector('#btnHasLocationPermissionYN').onclick=function(){
+	var hasPermission = M.execute('exWNHasPermissionYN', 'android.permission.ACCESS_COARSE_LOCATION');
+	console.log('hasPermission = ' + hasPermission);
+	alert('hasPermission = ' + hasPermission);
+};
+
+// 0-4. 안드로이드 필수 퍼미션 요청
+document.querySelector('#btnRequestPermissions_M').onclick=function(){
+	var params = ['android.permission.WRITE_EXTERNAL_STORAGE', 'android.permission.CAMERA'];
+
+	M.execute('exWNRequestPermissions', JSON.stringify(params), 'exWNCBRequestPermissions_M');
+};
+
+// 0-5. 안드로이드 옵션 퍼미션 요청
+document.querySelector('#btnRequestPermissions_O').onclick=function(){
+	var params = ['android.permission.ACCESS_COARSE_LOCATION'];
+
+	M.execute('exWNRequestPermissions', JSON.stringify(params), 'exWNCBRequestPermissions_O');
+};
+
+function exWNCBRequestPermissions_M(resultJsonObj) {
+	console.log("exWNCBRequestPermissions_M(resultJsonObj)");
+
+	console.log('type of resultJsonObj = ' + typeof resultJsonObj);
+	console.log(JSON.stringify(resultJsonObj));
+	// alert(JSON.stringify(resultJsonObj));
+
+	console.log('resultJsonObj.code = ' + resultJsonObj.code);
+	if(resultJsonObj.code == 0) {
+		// 성공. 비지니스 로직 수행
+		var params = ['android.permission.ACCESS_COARSE_LOCATION'];
+		M.execute('exWNRequestPermissions', JSON.stringify(params), 'exWNCBRequestPermissions_O');
+	} else {
+		// 실패. 에러처리등...
+		// 요청권한에 대해 사용자가 다시보지않기 체크함. 권한요청해도 요청팝업이 뜨지않음.
+		// 따라서 수동으로 권한 획득할수있도록 설명팝업 띄운후 앱 설정화면으로 보내야함.
+		if(resultJsonObj.code == 1000) {
+		    M.execute('exWNGoAppSettings');
+		}
+	}
+}
+
+function exWNCBRequestPermissions_O(resultJsonObj) {
+	console.log("exWNCBRequestPermissions_O(resultJsonObj)");
+
+	console.log('type of resultJsonObj = ' + typeof resultJsonObj);
+	console.log(JSON.stringify(resultJsonObj));
+	// alert(JSON.stringify(resultJsonObj));
+
+	console.log('resultJsonObj.code = ' + resultJsonObj.code);
+	if(resultJsonObj.code == 0) {
+		// 성공. 비지니스 로직 수행
+	} else {
+		// 실패. 에러처리등...
+		// 요청권한에 대해 사용자가 다시보지않기 체크함. 권한요청해도 요청팝업이 뜨지않음.
+		// 따라서 수동으로 권한 획득할수있도록 설명팝업 띄운후 앱 설정화면으로 보내야함.
+		if(resultJsonObj.code == 1000) {
+		    M.execute('exWNGoAppSettings');
+		}
+	}
+}
+
+M.onReady(function(e) {
+
+});
+
+M.onHide(function(e){
+
+});
+
+M.onRestore(function(e) {
+
+});
+
+M.onBack( function(e) {
+    M.page.back();
+});
+
+var MStatus = {
+		onReady : function(){},
+//		onBack : function(){},
+		onRestore : function(){},
+		onHide : function(){},
+		onDestroy : function(){},
+		onPause : function(){},
+		onResume : function(){}
+}
+</script>
+</html>

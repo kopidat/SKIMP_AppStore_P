@@ -1,0 +1,2 @@
+
+#import <MThirdPartyPattern/MThirdPartyPatternPlugin.h>

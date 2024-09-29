@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<manifest useDirectView="false">
+    <log>y</log>
+    <lang>ko</lang>
+    <resource>
+        <base_version>000000</base_version>
+        <target>app</target>
+        <update>
+            <server>STORE_REAL</server>
+            <trcode>api/res/auto-update</trcode>
+            <mode>real</mode>
+        </update>
+    </resource>
+    <startpage>
+<!--        <name>www/html/SKIMP-FR-001.html</name>-->
+        <name>www/html/index.html</name>
+        <orient>default</orient>
+        <orient-tablet>default</orient-tablet>
+    </startpage>
+    <settings>
+        <push>
+            <receiver> <!-- UPMC 설정 정보 -->
+                <log>y</log>
+
+                <!-- 파일 로그 설정, default : n -->
+                <file-log>n</file-log>
+
+                <!-- key 교환 방식 암호화 : 라이선스 발급시 요청 (hexa코드 16자리) -->
+                <security-indexes></security-indexes>
+
+                <!-- 서버 버전 5.0-->
+                <version>5.0</version>
+                <!-- receiver server url(필수 설정) -->
+                <!-- 개발 -->
+                <!--                <server>https://dev-3rd-skimp.skinnovation.com/push</server>-->
+                <!-- 운영 -->
+                <server>https://3rd-skimp.skinnovation.com/push</server>
+                <timeout>20000</timeout>
+
+                <!-- FCM 설정 -->
+                <!-- FCM sender-id (push-type이 GCM일경우 필수설정, sender id가 여러개인 경우, 공백없이 ","로 구분하여 등록한다. ) -->
+                <fcm-sender-id>662678309338</fcm-sender-id>
+
+                <!-- 푸쉬타입(필수설정)
+                 GCM:구글GCM / FCM(Public Push) : FCM 이용시도 하위 호환성을 위해, GCM으로 표기함
+                 UPNS:유라클UPNS(Private Push)
+                 ALL : doze mode 대응 (gcm : dummy data, upns : real data)
+                -->
+                <android-push-type>GCM</android-push-type>
+
+                <!-- 서비스 정책 ,
+                 user : one user multidevice,
+                 device : one user one device,
+                 default : user -->
+                <policy>device</policy>
+
+                <!-- stb(셋탑)/mobile(모바일)/mobile_old(디바이스 아이디 이전 버전) -->
+                <device-type>mobile</device-type>
+
+                <!-- upmc 연동시 휴대폰 번호 사용 여부  -->
+                <use-phone_number>n</use-phone_number>
+
+                <!-- 안드로이드 8.0이상 필수, 브로드캐스트 리시버에서 퍼미션 사용 여부를 설정 (Y/N) -->
+                <use-permission>Y</use-permission>
+            </receiver>
+
+            <upns>
+                <!-- agent, inapp -->
+                <agent-service-type>inapp</agent-service-type>
+
+                <!-- assets 안에 agent apk 파일이 있는 경우 -->
+                <!-- <agent-apk-name></agent-apk-name>
+                <agent-classpath></agent-classpath>
+                <agent-package-name></agent-package-name>  -->
+
+
+                <!-- UPNS RESTART ALARM INTERVAL (초단위) : JobScheduler 이벤트 시간-->
+                <agent-restart-interval>120</agent-restart-interval>
+
+                <!-- auto/manual -->
+                <agent-receive-confirm>auto</agent-receive-confirm>
+
+                <!-- reconnect interval (초단위) - 최소 10초 이상(서버에 대한 부하 고려하여 설정 - 기본값 10초) -->
+                <reconnect-interval>10</reconnect-interval>
+
+                <!-- reconnect interval (초단위) - 최소 10초 이상 (재접속 카운트에 따라 설정, 3회 이후 다시 최초 설정 간격으로 반복)-->
+                <reconnect-interval>10,20,30</reconnect-interval>
+
+                <!-- reallocate interval (v4.1 이상 - 다른 버전 무시) - 최소 10 이상 -->
+                <!-- 단위: , 1~reallocate-interval 사이의 랜덤한 시간간격으로 호출 요청 (60 이상 권장, 재할당 카운트에 따라 설정, 3회 이후 다시 최초 설정 간격으로 반복) -->
+                <reallocate-interval>10,30,50</reallocate-interval>
+
+                <!-- 사용자 등록 시 재시도 여부 auto / 횟수 (integer) -->
+                <retry-regist-count>auto</retry-regist-count>
+            </upns>
+        </push>
+        <prevention>
+            <server>https://gw-skimp.skinnovation.com/</server>
+            <rooting>n</rooting>
+        </prevention>
+    </settings>
+    <default_action>
+        <orient>port</orient>
+        <orient-tablet>default</orient-tablet>
+        <animate>default</animate>
+        <indicator>n</indicator>
+    </default_action>
+    <library>
+        <ext>skimp.partner.store.implementation.ExtendWNInterface</ext>
+        <addons>
+            <path>m.client.library.addon.db.WNInterfaceDB</path>
+            <path>m.client.library.addon.file.WNInterfaceFile</path>
+            <path>m.client.library.addon.media.WNInterfaceMedia</path>
+            <path>m.client.library.addon.net.WNInterfaceNet</path>
+            <path>m.client.library.addon.popup.WNInterfacePopup</path>
+            <path>m.client.library.addon.zip.WNInterfaceZip</path>
+            <path>m.client.library.addon.netext.WNInterfaceNetExt</path>
+        </addons>
+        <plugins>
+            <path>m.client.library.plugin.push.WNInterfacePush</path>
+            <path>m.client.library.plugin.prevention.WNInterfacePrevention</path>
+            <path>m.client.library.plugin.thirdparty.fingerprint.basic.WNInterfaceThirdPartyFingerPrint</path>
+            <path>m.client.library.plugin.thirdparty.pattern.basic.WNInterfaceThirdPartyPattern</path>
+            <path>m.client.library.plugin.thirdparty.pin.basic.WNInterfaceThirdPartyPin</path>
+            <path>m.client.library.third_ios.fingerprint.WNInterfaceThirdPartyFingerprintBasic</path>
+            <path>m.client.library.third_ios.WNInterfaceThirdPartyPattern</path>
+            <path>m.client.library.third_ios.pin.WNInterfaceThirdPartyPin</path>
+        </plugins>
+    </library>
+    <network>
+        <http>
+            <STORE_LOCAL>
+                <path>skimp.partner.store.implementation.HttpDefaultNetworkManager</path>
+                <address>http://172.20.10.3:8081/</address>
+                <timeout>15000</timeout>
+                <encoding>utf-8</encoding>
+                <type>rest</type>
+            </STORE_LOCAL>
+            <STORE_DEV>
+                <path>skimp.partner.store.implementation.HttpDefaultNetworkManager</path>
+                <address>https://dev-gw-skimp.skinnovation.com/</address>
+                <timeout>10000</timeout>
+                <encoding>utf-8</encoding>
+                <type>rest</type>
+            </STORE_DEV>
+            <STORE_REAL>
+                <path>skimp.partner.store.implementation.HttpDefaultNetworkManager</path>
+                <address>https://gw-skimp.skinnovation.com/</address>
+                <timeout>10000</timeout>
+                <encoding>utf-8</encoding>
+                <type>rest</type>
+            </STORE_REAL>
+        </http>
+        <socket/>
+    </network>
+    <application>
+        <android>
+            <hardwareaccelerated>hardware</hardwareaccelerated>
+            <user-theme>n</user-theme>
+            <use-youtube>n</use-youtube>
+        </android>
+    </application>
+</manifest>

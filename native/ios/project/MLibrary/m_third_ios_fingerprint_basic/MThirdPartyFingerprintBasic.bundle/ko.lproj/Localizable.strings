@@ -1,0 +1,9 @@
+"pg_fingerb_auth" = "지문을 인증해 주세요";
+"pg_fingerb_auth_fail" = "인증에 실패 하였습니다.";
+"pg_fingerb_auth_cancel" = "인증을 취소 하였습니다.";
+"pg_fingerb_auth_fallback" = "인증 정책에 대해 폴백을 사용할 수 없습니다.";
+"pg_fingerb_auth_system_cancel" = "시스템에 의해 인증이 취소되었습니다.";
+"pg_fingerb_auth_not_set" = "암호 코드가 장치에 설정되어 있지 않아 인증을 시작할 수 없습니다.";
+"pg_fingerb_auth_not_available" = "터치ID를 지원하지 않는 기기입니다.";
+"pg_fingerb_auth_not_enroll" = "터치ID에 등록된 지문이 없습니다.";
+"pg_fingerb_auth_lockout" = "터치ID가 잠겼습니다.";

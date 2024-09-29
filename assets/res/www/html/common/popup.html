@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no,viewport-fit=cover" />
+    <meta name="format-detection" content="telephone=no"/>
+    <link rel="shortcut icon" href="../img/favicon.ico" />
+    <link rel="apple-touch-icon" href="../img/favicon.ico" />
+    <link rel="stylesheet" href="../../css/morpheus-style.css" />
+	<script src="../../js/libs/jquery-3.1.1.min.js"></script>
+    <script src="../../js/ui.js"></script>
+
+    <style>
+        .btn-box .btn-detail {display: block; padding: 6px 0;font-size: 12px;margin: 10px 0;text-align: center;}
+        .btn-detail {text-align: left;border:0;color: #000;font-weight: normal;}
+    </style>
+
+    <title>레이어팝업</title>
+  </head>
+  <body>
+  <div class="wrapper">
+    <header class="header">
+      <h1>레이어팝업</h1>
+      <p class="logo"></p>
+    </header>
+  <div class="content popup" id="content">
+    <br>
+    <div class="btn-box" style="padding-bottom: 50px;">
+		<a href="#" class="btn-detail" onclick="layer_open('layer01'); return false;">SKIMP-FR-003(비밀번호 오류)</a>
+		<a href="#" class="btn-detail" onclick="layer_open('layer02'); return false;">SKIMP-FR-003(비밀번호 오류 5회 초과)</a>
+		<a href="#" class="btn-detail" onclick="layer_open('layer03'); return false;">SKIMP-FR-005(생체인증 등록)</a>
+    </div>
+  </div>    
+  </div>
+
+
+
+<!-- SKIMP-FR-003(비밀번호 오류) -->
+<div class="popup-layer" id="layer01">        
+	<div class="bg"></div>
+	<div class="pop-table">
+		<div class="pop-center">
+			<div class="pop-layer">
+				<div class="m_box">	
+					<div class="pop-header">
+						<h1>비밀번호 오류</h1>
+						<button type="button" class="close">닫기</button>
+					</div>			  
+					<div class="content">
+						<div class="mg-txt">
+							비밀번호가 맞지 않습니다<br>(1회 오류, 5회 실패시 5분간앱을 이용할수 없습니다.)			
+						</div>
+					</div>					
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- SKIMP-FR-003(비밀번호 오류) -->
+<div class="popup-layer" id="layer02">        
+	<div class="bg"></div>
+	<div class="pop-table">
+		<div class="pop-center">
+			<div class="pop-layer">
+				<div class="m_box">	
+					<div class="pop-header">
+						<h1>비밀번호 오류</h1>
+						<button type="button" class="close">닫기</button>
+					</div>			  
+					<div class="content">
+						<div class="mg-txt">
+							비밀번호가 5회 이상 맞지 않아 <br>모든 동작이 5분간 정지되오니 기다리신 후 로그인 하시기 바랍니다.			
+						</div>
+						<div class="time">4:59</div>
+					</div>					
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- SKIMP-FR-005(생체인증 등록) -->
+<div class="popup-layer" id="layer03">        
+	<div class="bg"></div>
+	<div class="pop-table">
+		<div class="pop-center">
+			<div class="pop-layer">
+				<div class="m_box">	
+					<div class="pop-header">
+						<h1>생체인증 등록</h1>
+						<button type="button" class="close">닫기</button>
+					</div>			  
+					<div class="content">
+						<div class="fingerprint"></div>
+						<div class="mg-txt">생체인증을 사용하여 로그인할 수 있습니다. 사용하시겠습니까?</div>
+						<div class="so-mg-txt">(나중에 설정을 통해서도 사용이 가능합니다.)</div>
+					</div>
+					<div class="button-area">
+						<button class="btn-gray w40p">아니요</button>
+						<button class="btn-red w60p">사용</button>
+					</div>					
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- SKIMP-FR-028(로그아웃) -->
+<div class="popup-layer" id="layer04">
+	<div class="bg"></div>
+	<div class="pop-table">
+		<div class="pop-center">
+			<div class="pop-layer">
+				<div class="m_box">
+					<div class="pop-header">
+						<h1>확인</h1>
+						<button type="button" class="close">닫기</button>
+					</div>
+					<div class="content">
+						<div class="mg-txt">로그아웃 하시겠습니까?</div>
+					</div>
+					<div class="button-area">
+						<button class="btn-gray w40p">아니요</button>
+						<button class="btn-red w60p">예</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+  </body>
+</html>
